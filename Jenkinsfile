@@ -50,5 +50,13 @@ pipeline {
                 }
             }
         }
+        stage('Build Docker Image') {
+            steps {
+                script {
+                    // Build Docker image
+                    sh 'docker build -t your-docker-image:latest .'
+                }
+            }
+        }
     }
 }
