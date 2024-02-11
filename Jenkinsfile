@@ -54,8 +54,17 @@ pipeline {
             steps {
                 script {
                     sh 'docker build -t fastapi-helloworld:latest .'
-                    sh 'trivy image --output trivy_report.json fastapi-helloworld:latest'
+                    // Run Trivy scan directly on the locally built Docker image
+                    def trivyCommand = 'trivy image --output trivy_report.json fastapi-helloworld:latest'
+                    def trivyExitCode = sh(script: trivyCommand, returnStatus: true)
+
+                    // If Trivy finds critical vulnerabilities, throw an error
+                    if (trivyExitCode != 0) {
+                        error "Trivy found critical vulnerabilities. Please review the report."
                     }
+                    // Archive the Trivy report for later reference
+                    archiveArtifacts artifacts: 'trivy_report.json', allowEmptyArchive: true
+                }
             }
         }
         stage('Build Docker image') {
