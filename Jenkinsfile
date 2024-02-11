@@ -65,7 +65,7 @@ pipeline {
                 script {
                     sh 'docker login -u praveenraj29 -p 473Msp20*'
                     sh 'docker pull praveenraj29/your-docker-image:latest'
-                    sh 'docker save your-docker-image:latest | trivy image - --exit-code 1'
+                    sh 'docker save praveenraj29/your-docker-image:latest | trivy image - --exit-code 1'
                 }
             }
         }
