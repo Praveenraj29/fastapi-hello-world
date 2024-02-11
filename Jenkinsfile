@@ -61,31 +61,11 @@ pipeline {
             steps {
                 script {
                     // Run Trivy scan directly on the locally built Docker image
-                    sh "trivy image --format json -o trivy_report.json ${DOCKER_IMAGE}"
-
-                    // Upload Trivy JSON report to Artifactory
-                    sh "curl -u ${env.ARTIFACTORY_USERNAME}:${env.ARTIFACTORY_API_KEY} -T trivy_report.json ${env.ARTIFACTORY_URL}/${env.ARTIFACTORY_REPO}/${env.ARTIFACTORY_PATH}/"
+                    sh "trivy image --format json -o trivy_report.json fastapi-helloworld:latest"
                 }
             }
         }
 
-        stage('Convert JSON to HTML') {
-            steps {
-                script {
-                    // Download Trivy JSON report from Artifactory
-                    sh "curl -u ${env.ARTIFACTORY_USERNAME}:${env.ARTIFACTORY_API_KEY} -O ${env.ARTIFACTORY_URL}/${env.ARTIFACTORY_REPO}/${env.ARTIFACTORY_PATH}/trivy_report.json"
-
-                    // Generate HTML report from JSON using trivy report command
-                    sh 'trivy report --input trivy_report.json --format html --output trivy_report.html'
-
-                    // Archive JSON report for later reference
-                    archiveArtifacts artifacts: 'trivy_report.json', allowEmptyArchive: true
-
-                    // Archive HTML report for later reference
-                    archiveArtifacts artifacts: 'trivy_report.html', allowEmptyArchive: true
-                }
-            }
-        }
         stage('Build Docker image') {
             steps {
                 script {
