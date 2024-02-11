@@ -9,8 +9,9 @@ pipeline {
                     checkout([$class: 'GitSCM', branches: [[name: 'main']], userRemoteConfigs: [[url: 'https://github.com/Praveenraj29/fastapi-hello-world.git']]])
                 }
             }
-        }    
-     stage('Run Unit Tests') {
+        }
+
+        stage('Run Unit Tests') {
             steps {
                 script {
                     // Set up virtual environment and install dependencies
@@ -22,7 +23,8 @@ pipeline {
                 }
             }
         }
-    stage('Linting') {
+
+        stage('Linting') {
             steps {
                 script {
                     // Install flake8
@@ -33,7 +35,8 @@ pipeline {
                 }
             }
         }
-    stage('SonarQube Analysis') {
+
+        stage('SonarQube Analysis') {
             steps {
                 script {
                     // Run SonarScanner as a Docker container
@@ -41,10 +44,25 @@ pipeline {
                         -e SONAR_HOST_URL=http://192.168.0.112:9000 \
                         -e SONAR_TOKEN=sqp_5349b09ee3507c39aec61d1cd28b0d5a6a03dcb2 \
                         -v "$(pwd):/usr/src" \
-                        sonarsource/sonar-scanner-cli'
+                        sonarsource/sonar-scanner-cli \
+                        -Dsonar.projectKey=fastapi-helloworld \
+                        -Dsonar.sources=app'
                 }
             }
         }
-     }
-}
+    }
 
+    post {
+        success {
+            // This block will be executed only if the pipeline is successful
+            echo 'All stages completed successfully!'
+        }
+        failure {
+            // This block will be executed only if there is a failure in any stage
+            echo 'Pipeline failed!'
+        }
+        always {
+            // Clean up steps or post-build actions can go here
+        }
+    }
+}
