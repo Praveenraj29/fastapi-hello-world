@@ -1,5 +1,12 @@
 pipeline {
     agent any
+    
+    environment {
+        DOCKER_IMAGE = 'fastapi-helloworld:latest'
+        ARTIFACTORY_URL = 'https://your-artifactory-url/artifactory'
+        ARTIFACTORY_REPO = 'your-artifactory-repo'
+        ARTIFACTORY_PATH = 'trivy_reports'
+    }
 
     stages {
         stage('Checkout') {
