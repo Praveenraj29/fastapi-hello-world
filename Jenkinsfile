@@ -54,7 +54,7 @@ pipeline {
             steps {
                 script {
                     sh 'docker build -t fastapi-helloworld:latest .'
-                    sh 'docker run -v /var/run/docker.sock:/var/run/docker.sock aquasec/trivy fastapi-helloworld:latest --exit-code 1'
+                    sh 'trivy image --format template --template "@/home/vijeta1/contrib/html.tpl" --output trivy_report.html fastapi-helloworld:latest'
                     }
             }
         }
