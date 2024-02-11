@@ -50,21 +50,20 @@ pipeline {
                 }
             }
         }
-        stage('Build Docker Image') {
-            steps {
-                script {
-                    // Build Docker image
-                    sh 'docker login -u praveenraj29 -p 473Msp20*'
-                    sh 'docker build -t your-docker-image:latest .'
-                    sh 'docker build -t praveenraj29/your-docker-image:latest .'
-                    sh 'docker push praveenraj29/your-docker-image:latest'
-                }
-            }
-        }
         stage('Trivy Scan') {
             steps {
                 script {
+                    sh 'docker build -t your-docker-image:latest .'
                     sh 'docker your-docker-image:latest | trivy image - --exit-code 1'
+                    }
+            }
+        }
+        stage('Build Docker image') {
+            steps {
+                script {
+                    sh 'docker login -u praveenraj29 -p 473Msp20*'
+                    sh 'docker build -t praveenraj29/your-docker-image:latest .'
+                    sh 'docker push praveenraj29/your-docker-image:latest'
                 }
             }
         }
