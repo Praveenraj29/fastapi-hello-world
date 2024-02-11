@@ -67,7 +67,7 @@ pipeline {
 
                     // Generate HTML report from JSON using trivy report command
                     sh 'trivy image --format json -o trivy_report.json fastapi-helloworld:latest'
-                    sh 'trivy image --format html -o trivy_report.html fastapi-helloworld:latest'
+                    sh 'trivy report --input trivy_report.json --format html --output trivy_report.html'
 
                     // Archive both JSON and HTML reports for later reference
                     archiveArtifacts artifacts: ['trivy_report.json', 'trivy_report.html'], allowEmptyArchive: true
