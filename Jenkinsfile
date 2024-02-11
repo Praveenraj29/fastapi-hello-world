@@ -51,18 +51,4 @@ pipeline {
             }
         }
     }
-
-    post {
-        success {
-            // This block will be executed only if the pipeline is successful
-            echo 'All stages completed successfully!'
-        }
-        failure {
-            // This block will be executed only if there is a failure in any stage
-            echo 'Pipeline failed!'
-        }
-        always {
-            // Clean up steps or post-build actions can go here
-        }
-    }
 }
