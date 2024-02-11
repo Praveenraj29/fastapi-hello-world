@@ -53,24 +53,29 @@ pipeline {
         stage('Trivy Scan') {
             steps {
                 script {
-                    // Build Docker image
-                    sh 'docker build -t fastapi-helloworld:latest .'
-
                     // Run Trivy scan directly on the locally built Docker image
-                    def trivyCommand = 'trivy image --output trivy_report.json --format json fastapi-helloworld:latest'
-                    def trivyExitCode = sh(script: trivyCommand, returnStatus: true)
+                    sh "trivy image --format json -o trivy_report.json ${DOCKER_IMAGE}"
 
-                    // If Trivy finds critical vulnerabilities, throw an error
-                    if (trivyExitCode != 0) {
-                        error "Trivy found critical vulnerabilities. Please review the report."
-                    }
+                    // Upload Trivy JSON report to Artifactory
+                    sh "curl -u ${env.ARTIFACTORY_USERNAME}:${env.ARTIFACTORY_API_KEY} -T trivy_report.json ${env.ARTIFACTORY_URL}/${env.ARTIFACTORY_REPO}/${env.ARTIFACTORY_PATH}/"
+                }
+            }
+        }
+
+        stage('Convert JSON to HTML') {
+            steps {
+                script {
+                    // Download Trivy JSON report from Artifactory
+                    sh "curl -u ${env.ARTIFACTORY_USERNAME}:${env.ARTIFACTORY_API_KEY} -O ${env.ARTIFACTORY_URL}/${env.ARTIFACTORY_REPO}/${env.ARTIFACTORY_PATH}/trivy_report.json"
 
                     // Generate HTML report from JSON using trivy report command
-                    sh 'trivy image --format json -o trivy_report.json fastapi-helloworld:latest'
-                    // sh 'trivy report --input trivy_report.json --format html --output trivy_report.html'
+                    sh 'trivy report --input trivy_report.json --format html --output trivy_report.html'
 
-                    // Archive both JSON and HTML reports for later reference
-                    archiveArtifacts artifacts: ['trivy_report.json', 'trivy_report.html'], allowEmptyArchive: true
+                    // Archive JSON report for later reference
+                    archiveArtifacts artifacts: 'trivy_report.json', allowEmptyArchive: true
+
+                    // Archive HTML report for later reference
+                    archiveArtifacts artifacts: 'trivy_report.html', allowEmptyArchive: true
                 }
             }
         }
