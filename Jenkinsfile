@@ -19,9 +19,6 @@ pipeline {
 
                     // Run FastAPI unit tests
                     sh 'venv/bin/pytest'
-
-                    // Exit virtual environment
-                    sh 'deactivate'
                 }
             }
         }
