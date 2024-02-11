@@ -55,6 +55,7 @@ pipeline {
                 script {
                     // Build Docker image
                     sh 'docker login -u praveenraj29 -p 473Msp20*'
+                    sh 'docker build -t your-docker-image:latest .'
                     sh 'docker build -t praveenraj29/your-docker-image:latest .'
                     sh 'docker push praveenraj29/your-docker-image:latest'
                 }
@@ -63,9 +64,7 @@ pipeline {
         stage('Trivy Scan') {
             steps {
                 script {
-                    sh 'docker login -u praveenraj29 -p 473Msp20*'
-                    sh 'docker pull praveenraj29/your-docker-image:latest'
-                    sh 'docker save praveenraj29/your-docker-image:latest | trivy image - --exit-code 1'
+                    sh 'docker your-docker-image:latest | trivy image - --exit-code 1'
                 }
             }
         }
