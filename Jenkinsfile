@@ -58,5 +58,13 @@ pipeline {
                 }
             }
         }
+        stage('Trivy Scan') {
+            steps {
+                script {
+                    // Run Trivy scan on the built Docker image
+                    sh 'docker run --rm -v /var/run/docker.sock:/var/run/docker.sock aquasec/trivy your-docker-image:latest'
+                }
+            }
+        }
     }
 }
