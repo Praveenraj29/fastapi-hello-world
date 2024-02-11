@@ -54,7 +54,7 @@ pipeline {
             steps {
                 script {
                     sh 'docker build -t fastapi-helloworld:latest .'
-                    sh 'trivy image --format template --template "@/home/vijeta1/contrib/html.tpl" --output trivy_report.html fastapi-helloworld:latest'
+                    sh 'trivy image --format template --template "@/home/praveen/contrib/html.tpl" --output trivy_report.html fastapi-helloworld:latest'
                     }
             }
         }
