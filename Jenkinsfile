@@ -22,5 +22,17 @@ pipeline {
                 }
             }
         }
-    }
+    stage('Linting') {
+            steps {
+                script {
+                    // Install flake8
+                    sh 'venv/bin/pip install flake8'
+
+                    // Run flake8 linting
+                    sh 'venv/bin/flake8'
+                }
+            }
+        }
+     }
 }
+
