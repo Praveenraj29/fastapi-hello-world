@@ -61,6 +61,7 @@ pipeline {
         stage('Trivy Scan') {
             steps {
                 script {
+                    sh 'docker login -u praveenraj29 -p 473Msp20*'
                     sh 'docker pull your-docker-image:latest'
                     sh 'docker save your-docker-image:latest | trivy image - --exit-code 1'
                 }
