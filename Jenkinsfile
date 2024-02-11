@@ -15,11 +15,10 @@ pipeline {
                 script {
                     // Set up virtual environment and install dependencies
                     sh 'python3 -m venv venv'
-                    sh 'source venv/bin/activate'
-                    sh 'pip install -r requirements.txt'
+                    sh 'venv/bin/pip install -r requirements.txt'
 
                     // Run FastAPI unit tests
-                    sh 'pytest'
+                    sh 'venv/bin/pytest'
 
                     // Exit virtual environment
                     sh 'deactivate'
