@@ -33,12 +33,15 @@ pipeline {
                 }
             }
         }
-     stage('SonarQube Analysis') {
+    stage('SonarQube Analysis') {
             steps {
                 script {
-                    // SonarQube scanner execution
-                    sh 'sonar-scanner'
-                    // Adjust the command based on your SonarQube server configuration
+                    // Run SonarScanner as a Docker container
+                    sh 'docker run --rm \
+                        -e SONAR_HOST_URL=http://192.168.0.112:9000 \
+                        -e SONAR_TOKEN=sqp_5349b09ee3507c39aec61d1cd28b0d5a6a03dcb2 \
+                        -v "$(pwd):/usr/src" \
+                        sonarsource/sonar-scanner-cli'
                 }
             }
         }
