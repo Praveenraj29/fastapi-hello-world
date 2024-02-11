@@ -9,8 +9,7 @@ pipeline {
                     checkout([$class: 'GitSCM', branches: [[name: 'main']], userRemoteConfigs: [[url: 'https://github.com/Praveenraj29/fastapi-hello-world.git']]])
                 }
             }
-        }
-    }
+        }    
      stage('Run Unit Tests') {
             steps {
                 script {
@@ -27,4 +26,5 @@ pipeline {
                 }
             }
         }
+    }
 }
