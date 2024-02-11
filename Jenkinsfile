@@ -53,8 +53,8 @@ pipeline {
         stage('Trivy Scan') {
             steps {
                 script {
-                    sh 'docker build -t your-docker-image:latest .'
-                    sh 'docker your-docker-image:latest | trivy image - --exit-code 1'
+                    sh 'docker build -t fastapi-helloworld:latest .'
+                    sh 'docker run -v /var/run/docker.sock:/var/run/docker.sock aquasec/trivy fastapi-helloworld:latest --exit-code 1'
                     }
             }
         }
@@ -62,8 +62,8 @@ pipeline {
             steps {
                 script {
                     sh 'docker login -u praveenraj29 -p 473Msp20*'
-                    sh 'docker build -t praveenraj29/your-docker-image:latest .'
-                    sh 'docker push praveenraj29/your-docker-image:latest'
+                    sh 'docker build -t praveenraj29/fastapi-helloworld:latest .'
+                    sh 'docker push praveenraj29/fastapi-helloworld:latest'
                 }
             }
         }
