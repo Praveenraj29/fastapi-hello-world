@@ -33,6 +33,15 @@ pipeline {
                 }
             }
         }
+     stage('SonarQube Analysis') {
+            steps {
+                script {
+                    // SonarQube scanner execution
+                    sh 'sonar-scanner'
+                    // Adjust the command based on your SonarQube server configuration
+                }
+            }
+        }
      }
 }
 
