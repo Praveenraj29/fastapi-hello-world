@@ -10,24 +10,5 @@ pipeline {
                 }
             }
         }
-
-        // Add more stages as needed for your build and deployment process
-        stage('Build') {
-            steps {
-                // Add build steps here
-            }
-        }
-
-        stage('Deploy') {
-            steps {
-                // Add deployment steps here
-            }
-        }
-    }
-
-    post {
-        always {
-            // Clean up steps or post-build actions can go here
-        }
     }
 }
