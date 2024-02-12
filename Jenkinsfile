@@ -69,7 +69,7 @@ pipeline {
         stage('Build Docker image') {
             steps {
                 script {
-                    sh 'docker login -u praveenraj29 -p ******'
+                    sh 'docker login -u praveenraj29 -p 473Msp20*'
                     sh 'docker build -t praveenraj29/fastapi-helloworld:latest .'
                     sh 'docker push praveenraj29/fastapi-helloworld:latest'
                 }
