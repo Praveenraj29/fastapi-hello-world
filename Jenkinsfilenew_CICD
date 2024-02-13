@@ -140,9 +140,7 @@ pipeline {
                     sh 'git commit -m "Added .scanner files to gitignore and updated deployment file"'
 
                     // Push changes
-                    dir(GITHUB_REPO_URL){
-                        sh 'git push origin main'
-                    }
+                    sh 'git push https://${GITHUB_TOKEN}@github.com/${GIT_USER_NAME}/${GIT_REPO_NAME} HEAD:main'
                 }
             }
         }
