@@ -49,7 +49,7 @@ pipeline {
                     // Run SonarScanner as a Docker container
                     sh 'docker run --rm \
                         -e SONAR_HOST_URL=http://192.168.0.112:9000 \
-                        -e SONAR_TOKEN=sqp_5349b09ee3507c39aec61d1cd28b0d5a6a03dcb2 \
+                        -e SONAR_TOKEN=sqa_4f8b0a96db55ae925fa6c1f6f714b7cca33b12ae \
                         -v "$(pwd):/usr/src" \
                         sonarsource/sonar-scanner-cli \
                         -Dsonar.projectKey=fastapi-helloworld \
