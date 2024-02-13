@@ -102,7 +102,7 @@ pipeline {
                     sh 'git config --global user.email "praveenraj.29muralli@gmail.com"'
                     sh 'git config --global user.name "praveenraj29"'
                     sh 'git remote set-url origin 'https://github.com/Praveenraj29/fastapi-hello-world'
-                    sh 'git checkout main'
+                    sh 'git checkout -b main origin/main || git checkout main'
 
                     // Commit changes
                     sh 'git add .'
