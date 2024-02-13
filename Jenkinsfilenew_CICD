@@ -93,10 +93,6 @@ pipeline {
                     dir('git-repo') {
                         checkout([$class: 'GitSCM', branches: [[name: 'main']], userRemoteConfigs: [[url: 'https://github.com/Praveenraj29/fastapi-hello-world']]])
                     }
-                    // Create 'main' branch if it doesn't exist
-                        sh 'git branch main || git checkout main'
-                        sh 'git branch -u origin/main'
-                    
                     // Update deployment.yaml with the new image tag
                     dir('git-repo/k8s') {
                         sh "sed -i 's|image:.*|image: ${IMAGE_REPO}/${NAME}:${VERSION}|' deployment.yaml"
@@ -105,6 +101,8 @@ pipeline {
                     // Configure git user
                     sh 'git config --global user.email "praveenraj.29muralli@gmail.com"'
                     sh 'git config --global user.name "praveenraj29"'
+                    sh 'git remote set-url origin 'https://github.com/Praveenraj29/fastapi-hello-world'
+                    sh 'git checkout main'
 
                     // Commit changes
                     sh 'git add .'
