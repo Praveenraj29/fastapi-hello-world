@@ -128,8 +128,11 @@ pipeline {
                     sh 'git config --global credential.helper cache'
                     sh 'git config --global credential.helper "cache --timeout=3600"'
 
-                    // Stash changes, including untracked files
-                    sh 'git stash --include-untracked'
+                    // Remove specific files causing permission issues
+                    sh 'rm -f .scannerwork/.sonar_lock .scannerwork/report-task.txt'
+
+                    // Stash changes
+                    sh 'git stash'
 
                     // Ensure 'main' branch exists and is checked out
                     sh 'git checkout -b main origin/main || git checkout main'
