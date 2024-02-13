@@ -6,7 +6,7 @@ pipeline {
         ARTIFACTORY_REPO = 'your-artifactory-repo'
         ARTIFACTORY_PATH = 'trivy_reports'
         NAME = "fastapi-hello-world"
-        VERSION= "$(env.BUILD_ID)-$(env.GIT_COMMIT)"
+        VERSION = "${BUILD_ID}-${GIT_COMMIT}"
         IMAGE_REPO = "praveenraj29"
     }
 
