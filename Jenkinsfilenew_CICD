@@ -86,7 +86,6 @@ pipeline {
             }
         }
 
-    stages {
         stage('Clone/Pull Repo') {
             steps {
                 script {
@@ -139,5 +138,4 @@ pipeline {
             }
         }
     }
-  }
-} 
+}
