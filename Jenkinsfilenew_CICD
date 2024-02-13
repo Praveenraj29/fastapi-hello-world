@@ -6,6 +6,7 @@ pipeline {
         VERSION = "${BUILD_ID}-${GIT_COMMIT}"
         IMAGE_REPO = 'praveenraj29'
         GITHUB_REPO_URL = 'https://github.com/Praveenraj29/fastapi-hello-world.git'
+        GIT_CREDENTIALS_ID = 'dckr_pat_J0MvbOHtjLrdrT6gRmRuRDyncb4'
     }
 
     stages {
