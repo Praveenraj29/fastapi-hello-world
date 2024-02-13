@@ -129,15 +129,17 @@ pipeline {
                     sh 'git config --global credential.helper cache'
                     sh 'git config --global credential.helper "cache --timeout=3600"'
 
-                    // Remove specific files causing permission issues from .gitignore
+                // Remove specific files causing permission issues from .gitignore
                     sh 'echo ".scannerwork/.sonar_lock\n.scannerwork/report-task.txt" >> .gitignore'
 
-                    // Ensure 'main' branch exists and is checked out
-                    sh 'git checkout -b main origin/main || git checkout main'
+                    // Ensure 'main' branch exists
+                    sh 'git branch main origin/main 2>/dev/null || true'
 
                     // Commit changes
                     sh 'git add .gitignore k8s/deployment.yaml'
                     sh 'git commit -m "Added .scanner files to gitignore and updated deployment file"'
+
+                    // Push changes
                     sh 'git push origin main'
                 }
             }
