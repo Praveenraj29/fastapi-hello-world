@@ -86,22 +86,47 @@ pipeline {
             }
         }
 
+    stages {
+        stage('Clone/Pull Repo') {
+            steps {
+                script {
+                    // Check if the repository is already cloned
+                    def repoDir = 'git-repo'
+                    def repoExists = fileExists(repoDir)
+
+                    if (repoExists) {
+                        echo 'Repository already exists. Pulling changes.'
+                        dir(repoDir) {
+                            sh 'git pull origin main'
+                        }
+                    } else {
+                        echo 'Repository does not exist. Cloning.'
+                        checkout([$class: 'GitSCM', branches: [[name: 'main']], userRemoteConfigs: [[url: 'https://github.com/Praveenraj29/fastapi-hello-world']]])
+                    }
+                }
+            }
+        }
+
+        stage('Update manifest file') {
+            steps {
+                script {
+                    // Update deployment.yaml with the new image tag
+                    dir('k8s') {
+                        sh "sed -i 's|image:.*|image: ${IMAGE_REPO}/${NAME}:${VERSION}|' deployment.yaml"
+                    }
+                }
+            }
+        }
+
         stage('Commit and Push to GitHub') {
             steps {
                 script {
-                    // Clone the repository
-                    dir('git-repo') {
-                        checkout([$class: 'GitSCM', branches: [[name: 'main']], userRemoteConfigs: [[url: 'https://github.com/Praveenraj29/fastapi-hello-world']]])
-                    }
-                    // Update deployment.yaml with the new image tag
-                    dir('git-repo/k8s') {
-                        sh "sed -i 's|image:.*|image: ${IMAGE_REPO}/${NAME}:${VERSION}|' deployment.yaml"
-                    }
-
                     // Configure git user
                     sh 'git config --global user.email "praveenraj.29muralli@gmail.com"'
                     sh 'git config --global user.name "praveenraj29"'
-                    sh 'git remote set-url origin 'https://github.com/Praveenraj29/fastapi-hello-world'
+                    sh 'git remote set-url origin https://github.com/Praveenraj29/fastapi-hello-world'
+
+                    // Ensure 'main' branch exists and is checked out
                     sh 'git checkout -b main origin/main || git checkout main'
 
                     // Commit changes
@@ -114,4 +139,5 @@ pipeline {
             }
         }
     }
-}
+  }
+} 
