@@ -134,7 +134,7 @@ pipeline {
                     sh 'git config --global credential.helper "cache --timeout=3600"'
 
                     // Remove specific files causing permission issues
-                    sh 'rm -f .scannerwork/.sonar_lock .scannerwork/report-task.txt'
+                    sh 'sudo rm -f .scannerwork/.sonar_lock .scannerwork/report-task.txt'
 
                     // Stash changes
                     sh 'git stash'
