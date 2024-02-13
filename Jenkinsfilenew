@@ -1,13 +1,12 @@
 pipeline {
     agent any
-    
     environment {
         ARTIFACTORY_URL = 'https://your-artifactory-url/artifactory'
         ARTIFACTORY_REPO = 'your-artifactory-repo'
         ARTIFACTORY_PATH = 'trivy_reports'
-        NAME = "fastapi-hello-world"
+        NAME = 'fastapi-hello-world'
         VERSION = "${BUILD_ID}-${GIT_COMMIT}"
-        IMAGE_REPO = "praveenraj29"
+        IMAGE_REPO = 'praveenraj29'
     }
 
     stages {
@@ -79,7 +78,7 @@ pipeline {
         stage('Push Docker image') {
             steps {
                 script {
-                    withDockerRegistry([credentialsID: "docker", url: "https://your-docker-registry-url"]) {
+                    withDockerRegistry([credentialsID: 'docker', url: 'https://your-docker-registry-url']) {
                         sh "docker push ${IMAGE_REPO}/${NAME}:${VERSION}"
                     }
                 }
