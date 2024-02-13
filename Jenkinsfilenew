@@ -59,27 +59,31 @@ pipeline {
                 }
             }
         }
+
         stage('Trivy Scan') {
             steps {
                 script {
                     // Run Trivy scan directly on the locally built Docker image
-                    sh "trivy image --format json -o trivy_report.json fastapi-helloworld:latest"
+                    sh "trivy image --format json -o trivy_report.json ${NAME}:latest"
                 }
             }
         }
 
         stage('Build Docker image') {
-            steps{
-                script{
-                    sh "docker build -t ${NAME}"
+            steps {
+                script {
+                    sh "docker build -t ${NAME} ."
                     sh "docker tag ${NAME}:latest ${IMAGE_REPO}/${NAME}:${VERSION}"
                 }
             }
         }
+
         stage('Push Docker image') {
-            steps{
-               withDockerRegistry([credentialsID: "docker", url: ""])
-                sh 'docker push $(IMAGE_REPO)/${NAME}:${VERSION}'
+            steps {
+                script {
+                    withDockerRegistry([credentialsID: "docker", url: "https://your-docker-registry-url"]) {
+                        sh "docker push ${IMAGE_REPO}/${NAME}:${VERSION}"
+                    }
                 }
             }
         }
