@@ -6,7 +6,6 @@ pipeline {
         VERSION = "${BUILD_ID}-${GIT_COMMIT}"
         IMAGE_REPO = 'praveenraj29'
         GITHUB_REPO_URL = 'https://github.com/Praveenraj29/fastapi-hello-world.git'
-        GIT_CREDENTIALS_ID = 'dckr_pat_J0MvbOHtjLrdrT6gRmRuRDyncb4'
     }
 
     stages {
@@ -122,7 +121,7 @@ pipeline {
         stage('Commit and Push to GitHub') {
             steps {
                 script {
-                    // Configure git user
+                   // Configure git user
                     sh 'git config --global user.email "praveenraj.29muralli@gmail.com"'
                     sh 'git config --global user.name "praveenraj29"'
 
@@ -130,7 +129,7 @@ pipeline {
                     sh 'git config --global credential.helper cache'
                     sh 'git config --global credential.helper "cache --timeout=3600"'
 
-                // Remove specific files causing permission issues from .gitignore
+                    // Remove specific files causing permission issues from .gitignore
                     sh 'echo ".scannerwork/.sonar_lock\n.scannerwork/report-task.txt" >> .gitignore'
 
                     // Ensure 'main' branch exists
@@ -141,7 +140,9 @@ pipeline {
                     sh 'git commit -m "Added .scanner files to gitignore and updated deployment file"'
 
                     // Push changes
-                    sh 'git push origin main'
+                    dir(GITHUB_REPO_URL){
+                        sh 'git push origin main'
+                    }
                 }
             }
         }
