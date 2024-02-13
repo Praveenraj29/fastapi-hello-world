@@ -128,8 +128,8 @@ pipeline {
                     sh 'git config --global credential.helper cache'
                     sh 'git config --global credential.helper "cache --timeout=3600"'
 
-                    // Stash changes
-                    sh 'git stash'
+                    // Stash changes, including untracked files
+                    sh 'git stash --include-untracked'
 
                     // Ensure 'main' branch exists and is checked out
                     sh 'git checkout -b main origin/main || git checkout main'
