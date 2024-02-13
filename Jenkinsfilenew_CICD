@@ -146,6 +146,8 @@ pipeline {
                     sh 'git stash apply'
 
                     // Commit changes
+                    sh 'git add .gitignore'
+                    sh 'git commit -m "Added .scanner files to gitignore'
                     sh 'git add .'
                     sh 'git commit -m "Updated deployment file with new Docker image"'
 
