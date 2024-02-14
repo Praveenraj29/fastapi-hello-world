@@ -129,7 +129,7 @@ pipeline {
                     sh 'git config --global user.name "praveenraj29"'
 
                     // Set GitHub credentials
-                    withCredentials([string(credentialsId: CREDENTIAL_ID, variable: 'GITHUB_TOKEN')]) {
+                    withCredentials([usernamePassword(credentialsId: CREDENTIAL_ID, usernameVariable: 'GITHUB_USERNAME', passwordVariable: 'GITHUB_PASSWORD')]) {
                         // Remove specific files causing permission issues from .gitignore
                         sh 'echo ".scannerwork/.sonar_lock\n.scannerwork/report-task.txt" >> .gitignore'
 
@@ -141,10 +141,9 @@ pipeline {
                         sh 'git commit -m "Added .scanner files to gitignore and updated deployment file"'
 
                         // Push changes
-                        sh "git push https://${GITHUB_TOKEN}@github.com/${GIT_USER_NAME}/${GIT_REPO_NAME} HEAD:main"
+                        sh "git push https://${GITHUB_USERNAME}:${GITHUB_PASSWORD}@github.com/${GIT_USER_NAME}/${GIT_REPO_NAME} HEAD:main"
                     }
                 }
             }
-        }
     }
 }
