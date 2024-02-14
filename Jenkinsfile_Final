@@ -8,7 +8,7 @@ pipeline {
         GITHUB_REPO_URL = 'https://github.com/Praveenraj29/fastapi-hello-world.git'
         GIT_USER_NAME = 'praveenraj29'
         GIT_REPO_NAME = 'fastapi-hello-world'
-        GITHUB_TOKEN_CREDENTIAL = credentials('github-test')
+        CREDENTIAL_ID = 'github' // Use the default GitHub credentials ID
     }
 
     stages {
@@ -129,7 +129,7 @@ pipeline {
                     sh 'git config --global user.name "praveenraj29"'
 
                     // Set GitHub credentials
-                    withCredentials([string(credentialsId: GITHUB_TOKEN_CREDENTIAL, variable: 'GITHUB_TOKEN')]) {
+                    withCredentials([string(credentialsId: CREDENTIAL_ID, variable: 'GITHUB_TOKEN')]) {
                         // Remove specific files causing permission issues from .gitignore
                         sh 'echo ".scannerwork/.sonar_lock\n.scannerwork/report-task.txt" >> .gitignore'
 
