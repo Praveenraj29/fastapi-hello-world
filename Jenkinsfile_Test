@@ -1,0 +1,150 @@
+pipeline {
+    agent any
+    environment {
+        ARTIFACTORY_PATH = 'trivy_reports'
+        NAME = 'fastapi-hello-world'
+        VERSION = "${BUILD_ID}-${GIT_COMMIT}"
+        IMAGE_REPO = 'praveenraj29'
+        GITHUB_REPO_URL = 'https://github.com/Praveenraj29/fastapi-hello-world.git'
+        GIT_USER_NAME = 'praveenraj29'
+        GIT_REPO_NAME = 'fastapi-hello-world'
+        GITHUB_TOKEN_CREDENTIAL = credentials('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')
+    }
+    stages {
+        stage('Checkout') {
+            steps {
+                script {
+                    checkout([$class: 'GitSCM', 
+                              branches: [[name: 'main']],
+                              userRemoteConfigs: [[url: 'https://praveenraj29:${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}@github.com/Praveenraj29/fastapi-hello-world.git']]])
+                }
+            }
+        }
+
+        stage('Run Unit Tests') {
+            steps {
+                script {
+                    // Set up virtual environment and install dependencies
+                    sh 'python3 -m venv venv'
+                    sh 'venv/bin/pip install -r requirements.txt'
+
+                    // Run FastAPI unit tests
+                    sh 'venv/bin/pytest'
+                }
+            }
+        }
+
+        stage('Linting') {
+            steps {
+                script {
+                    // Install flake8
+                    sh 'venv/bin/pip install flake8'
+
+                    // Run flake8 linting
+                    sh 'venv/bin/flake8 --exclude=venv'
+                }
+            }
+        }
+
+        stage('SonarQube Analysis') {
+            steps {
+                script {
+                    // Run SonarScanner as a Docker container
+                    sh 'docker run --rm \
+                        -e SONAR_HOST_URL=http://192.168.0.112:9000 \
+                        -e SONAR_TOKEN=sqa_4f8b0a96db55ae925fa6c1f6f714b7cca33b12ae \
+                        -v "$(pwd):/usr/src" \
+                        sonarsource/sonar-scanner-cli \
+                        -Dsonar.projectKey=fastapi-helloworld \
+                        -Dsonar.sources=app'
+                }
+            }
+        }
+
+        stage('Build Docker image') {
+            steps {
+                script {
+                    sh "docker build -t ${NAME} ."
+                    sh "docker tag ${NAME}:latest ${IMAGE_REPO}/${NAME}:${VERSION}"
+                }
+            }
+        }
+
+        stage('Trivy Scan') {
+            steps {
+                script {
+                    // Run Trivy scan directly on the locally built Docker image
+                    sh "trivy image --format json -o trivy_report.json ${NAME}:latest"
+                }
+            }
+        }
+
+        stage('Push Docker image') {
+            steps {
+                script {
+                    withDockerRegistry([credentialsID: 'docker', url: 'https://index.docker.io/v1/']) {
+                        sh "docker push ${IMAGE_REPO}/${NAME}:${VERSION}"
+                    }
+                }
+            }
+        }
+
+        stage('Clone/Pull Repo') {
+            steps {
+                script {
+                    // Check if the repository is already cloned
+                    def repoDir = 'git-repo'
+                    def repoExists = fileExists(repoDir)
+
+                    if (repoExists) {
+                        echo 'Repository already exists. Pulling changes.'
+                        dir(repoDir) {
+                            // Pull changes from the remote 'main' branch
+                            sh 'git pull origin main'
+                        }
+                    } else {
+                        echo 'Repository does not exist. Cloning.'
+                        checkout([$class: 'GitSCM', branches: [[name: 'main']], userRemoteConfigs: [[url: 'https://github.com/Praveenraj29/fastapi-hello-world']]])
+                    }
+                }
+            }
+        }
+
+        stage('Update manifest file') {
+            steps {
+                script {
+                    // Update deployment.yaml with the new image tag
+                    dir('k8s') {
+                        sh "sed -i 's|image:.*|image: ${IMAGE_REPO}/${NAME}:${VERSION}|' deployment.yaml"
+                    }
+                }
+            }
+        }
+
+        stage('Commit and Push to GitHub') {
+            steps {
+                script {
+                    // Configure git user
+                    sh 'git config --global user.email "praveenraj.29muralli@gmail.com"'
+                    sh 'git config --global user.name "praveenraj29"'
+
+                    // Set GitHub credentials
+                    withCredentials([string(credentialsId: GITHUB_TOKEN_CREDENTIAL, variable: 'GITHUB_TOKEN')]) {
+                        // Remove specific files causing permission issues from .gitignore
+                        sh 'echo ".scannerwork/.sonar_lock\n.scannerwork/report-task.txt" >> .gitignore'
+
+                        // Ensure 'main' branch exists
+                        sh 'git branch main origin/main 2>/dev/null || true'
+
+                        // Commit changes
+                        sh 'git add .gitignore k8s/deployment.yaml'
+                        sh 'git commit -m "Added .scanner files to gitignore and updated deployment file"'
+
+                        // Push changes
+                        sh "git push https://${GITHUB_TOKEN}@github.com/${GIT_USER_NAME}/${GIT_REPO_NAME} HEAD:main"
+                    }
+                }
+            }
+        }
+    }
+}
