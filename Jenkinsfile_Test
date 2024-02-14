@@ -11,15 +11,14 @@ pipeline {
         GITHUB_TOKEN_CREDENTIAL = credentials('github-test')
     }
     stages {
-        stages {
-            stage('Checkout') {
-                steps {
-                    script {
-                        // Checkout the code from a Git repository
-                        checkout([$class: 'GitSCM', branches: [[name: 'main']], userRemoteConfigs: [[url: 'https://github.com/Praveenraj29/fastapi-hello-world.git']]])
-                    }
+        stage('Checkout') {
+            steps {
+                script {
+                    // Checkout the code from a Git repository
+                    checkout([$class: 'GitSCM', branches: [[name: 'main']], userRemoteConfigs: [[url: 'https://github.com/Praveenraj29/fastapi-hello-world.git']]])
                 }
             }
+        }
 
         stage('Run Unit Tests') {
             steps {
@@ -147,6 +146,4 @@ pipeline {
             }
         }
     }
-    }       
 }
-
