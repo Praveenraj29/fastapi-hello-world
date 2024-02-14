@@ -16,6 +16,6 @@ spec:
     spec:
       containers:
       - name: fastapi-container
-        image: praveenraj29/fastapi-helloworld:latest
+        image: praveenraj29/fastapi-hello-world:9-ad4810b6fefc343501c21c2ebeb28a85da338d5d
         ports:
         - containerPort: 8000
