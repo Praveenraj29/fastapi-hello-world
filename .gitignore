@@ -167,3 +167,5 @@ cython_debug/
 .scannerwork/report-task.txt
 .scannerwork/.sonar_lock
 .scannerwork/report-task.txt
+.scannerwork/.sonar_lock
+.scannerwork/report-task.txt
