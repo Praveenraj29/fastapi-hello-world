@@ -8,18 +8,18 @@ pipeline {
         GITHUB_REPO_URL = 'https://github.com/Praveenraj29/fastapi-hello-world.git'
         GIT_USER_NAME = 'praveenraj29'
         GIT_REPO_NAME = 'fastapi-hello-world'
-        GITHUB_TOKEN_CREDENTIAL = credentials('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')
+        GITHUB_TOKEN_CREDENTIAL = credentials('github-test')
     }
     stages {
-        stage('Checkout') {
-            steps {
-                script {
-                    checkout([$class: 'GitSCM', 
-                              branches: [[name: 'main']],
-                              userRemoteConfigs: [[url: 'https://praveenraj29:${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}@github.com/Praveenraj29/fastapi-hello-world.git']]])
+        stages {
+            stage('Checkout') {
+                steps {
+                    script {
+                        // Checkout the code from a Git repository
+                        checkout([$class: 'GitSCM', branches: [[name: 'main']], userRemoteConfigs: [[url: 'https://github.com/Praveenraj29/fastapi-hello-world.git']]])
+                    }
                 }
             }
-        }
 
         stage('Run Unit Tests') {
             steps {
@@ -147,4 +147,5 @@ pipeline {
             }
         }
     }
+    }       
 }
