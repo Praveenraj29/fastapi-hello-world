@@ -51,7 +51,7 @@ pipeline {
                 script {
                     // Run SonarScanner as a Docker container
                     sh 'docker run --rm \
-                        -e SONAR_HOST_URL=http:localhost:9000 \
+                        -e SONAR_HOST_URL=http://localhost:9000 \
                         -e SONAR_TOKEN=sqa_4f8b0a96db55ae925fa6c1f6f714b7cca33b12ae \
                         -v "$(pwd):/usr/src" \
                         sonarsource/sonar-scanner-cli \
